@@ -1,3 +1,5 @@
+### CRUD ###
+
 GET _search
 {
   "query": {
@@ -193,7 +195,6 @@ GET /inspections/report/_search
   }
 }
 
-
 # aggregations
 GET /inspections/report/_search
 {
@@ -226,4 +227,56 @@ GET /inspections/report/_search
       }
     }
   }
+}
+
+# mapping
+GET /inspections/_mapping/report
+
+# UPDATE/EDIT
+POST inspections/report/3/_update
+{
+  "doc": {
+    "flagged": false,
+    "views": 0
+  }
+}
+#
+GET inspections/report/3
+
+# löschen
+DELETE inspections/report/1
+#
+GET /inspections/report/1
+
+# volltextsuche
+GET /inspections/_analyze
+{
+  "tokenizer": "standard",
+  "text": "Software made with ❤ by Tom S. in Hamburg - Germany # 2018"
+}
+
+GET /inspections/_analyze
+{
+  "tokenizer": "standard",
+  "filter": ["lowercase"],
+  "text": "Software made with ❤ by Tom S. in Hamburg - Germany # 2018"
+}
+
+GET /inspections/_analyze
+{
+  "tokenizer": "standard",
+  "filter": ["lowercase", "unique"],
+  "text": "Software software made with ❤ by Tom S. in Hamburg - Germany # 2018"
+}
+
+GET _analyze
+{
+  "analyzer": "standard",
+  "text": "Software.software.made.wit.❤.by.Tom.S..in.Hamburg.-.Germany.#.2018"
+}
+
+GET _analyze
+{
+  "analyzer": "simple",
+  "text": "Software.software.made.wit.❤.by.Tom.S..in.Hamburg.-.Germany.#.2018"
 }
