@@ -1,0 +1,229 @@
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+POST /inspections/report
+{
+    "account_number": 7,
+    "balance": 13,
+    "firstname": "Tom",
+    "lastname": "S.",
+    "age": 77,
+    "gender": "M",
+    "address": "Holsteiner Chaussee 181",
+    "employer": "Developer",
+    "email": "thoschulte@gmail.com",
+    "city": "Hamburg",
+    "country": "Germany"
+}
+
+GET /inspections/report/_search
+
+PUT /inspections/report/1977
+{
+    "account_number": 7,
+    "balance": 13,
+    "firstname": "Tom",
+    "lastname": "S.",
+    "age": 77,
+    "gender": "M",
+    "address": "Holsteiner Chaussee 181",
+    "employer": "Developer",
+    "email": "thoschulte@gmail.com",
+    "city": "Hamburg",
+    "country": "Germany"
+}
+
+GET /inspections/report/1977
+
+DELETE /inspections
+
+PUT /inspections
+{
+  "settings": {
+    "index.number_of_shards": 1,
+    "index.number_of_replicas": 0
+  }
+}
+
+POST _bulk
+{ "index" : { "_index" : "test", "_type" : "_doc", "_id" : "1" } }
+{ "field1" : "value1" }
+{ "delete" : { "_index" : "test", "_type" : "_doc", "_id" : "2" } }
+{ "create" : { "_index" : "test", "_type" : "_doc", "_id" : "3" } }
+{ "field1" : "value3" }
+{ "update" : {"_id" : "1", "_type" : "_doc", "_index" : "test"} }
+{ "doc" : {"field2" : "value2"} }
+
+GET /test/_type/_search
+
+DELETE /test
+
+POST /inspections/report/_bulk
+{ "index":{"_id":1}}
+{"account_number": 7,"balance": 13,"firstname": "Thomas","lastname": "Schulte","age": 77,"gender": "M","address": "Holsteiner Chaussee 181","employer": "Developer","email": "thoschulte@gmail.com","city": "Hamburg","country": "Germany"}
+{ "index":{"_id":2}}
+{"account_number": 137,"balance": 1377,"firstname": "Tom","lastname": "Schulte","age": 1977,"gender": "M","address": "Holsteiner Chaussee 181","employer": "Developer","email": "thoschulte@gmail.com","city": "Hamburg","country": "Germany"}
+
+# Find *all* documents
+GET /inspections/report/_search
+
+GET /inspections/report/_search
+{
+  "query": {
+    "match": {
+      "firstname": "Thomas"
+    }
+  }
+}
+
+GET /inspections/report/_search
+{
+  "query": {
+    "match_phrase": {
+      "address": "Holsteiner Chaussee 181"
+    }
+  }
+}
+
+GET /inspections/report/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "firstname": "Tom"
+          }
+        }, {
+          "match": {
+            "age": 77
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET /inspections/report/_search
+{
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "match": {
+            "lastname": "Schulte"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET /inspections/report/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "lastname": {
+              "query": "S.",
+              "boost": 3
+            }
+          }
+        }, {
+          "match": {
+            "age": {
+              "query": 77
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET /inspections/report/_search
+{
+  "query": {
+    "match": {
+      "address": "Chaussee"
+    }
+  },
+  "highlight": {
+    "fields": {
+      "address": {}
+    }
+  }
+}
+
+# filter
+GET /inspections/report/_search
+{
+  "query": {
+    "range": {
+      "age": {
+        "gt": 77
+      }
+    }
+  },
+  "sort": [
+    {
+      "age": "desc"
+    }
+  ]
+}
+
+# aggregations
+GET /inspections/report/_search
+{
+  "query": {
+    "match": {
+      "address": "Chaussee"
+    }
+  },
+  "highlight": {
+    "fields": {
+      "address": {}
+    }
+  }
+}
+
+
+# aggregations
+GET /inspections/report/_search
+{
+  "query": {
+    "match": {
+      "address": "Chaussee"
+    }
+  },
+  "aggregations": {
+    "healthscore": {
+      "range": {
+        "field": "account_number",
+        "ranges": [
+          {
+            "key": "0-5",
+            "from": 0,
+            "to": 5
+          },
+          {
+            "key": "6-10",
+            "from": 6,
+            "to": 10
+          },
+          {
+            "key": "11-10000",
+            "from": 11,
+            "to": 10000
+          }
+        ]
+      }
+    }
+  }
+}
