@@ -1,2 +1,2 @@
-# io.server360.elk.kibana-dev-tools
+# io.server360.elk.kibana
 The Dev Tools page contains development tools that you can use to interact with your data in Kibana. This here are examples...
